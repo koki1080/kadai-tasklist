@@ -22,11 +22,13 @@ class TasksController extends Controller
             
             $data = [
                 'user' => $user,
-                'tasks' => $tasks,
-            ];
+                'tasks'=> $tasks,
+                ];
+            return view('tasks.index', $data);
         }
-        
-        return view('welcome', $data);
+        else {
+            return view('welcome');
+        }
     }
      /**
      * Show the form for creating a new resource.
@@ -56,9 +58,10 @@ class TasksController extends Controller
 
         $request->user()->tasks()->create([
             'content' => $request->content,
+            'status' =>$request->status,
         ]);
 
-        return back();
+        return redirect('/');
     }
 
     /**
@@ -70,10 +73,17 @@ class TasksController extends Controller
     public function show($id)
     {
         $task = Task::find($id);
-
-        return view('tasks.show', [
+        if (\Auth::id() === $task->user_id) {
+             return view('tasks.show', [
             'task' => $task,
-        ]);
+             ]);
+        }else{
+             return redirect('/');
+        }
+        
+        
+
+       
     }
 
     /**
@@ -85,11 +95,14 @@ class TasksController extends Controller
     public function edit($id)
     {
         $task = Task::find($id);
-
-        return view('tasks.edit', [
+        if (\Auth::id() === $task->user_id) {
+             return view('tasks.edit', [
             'task' => $task,
-        ]);
-    }
+            ]);
+        }else{
+             return redirect('/');
+        }
+    }  
 
     /**
      * Update the specified resource in storage.
@@ -125,7 +138,7 @@ class TasksController extends Controller
             $task->delete();
         }
 
-        return back();
+        return redirect('/');
     }
 }
 

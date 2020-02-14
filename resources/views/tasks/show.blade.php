@@ -1,34 +1,39 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="row">
-        <aside class="col-sm-4">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">{{ $user->name }}</h3>
-                </div>
-                <div class="card-body">
-                    <img class="rounded img-fluid" src="{{ Gravatar::src($user->email, 500) }}" alt="">
-                </div>
+
+@if (Auth::check())
+<h1>id : {{ $task->id }} のタスク詳細ページ</h1>
+
+    <table class="table table-bordered">
+        <tr>
+            <th>id</th>
+            <td>{{ $task->id }}</td>
+        </tr>
+        <tr>
+            <th>ステータス</th>
+            <td>{{ $task->status }}</td>
+        </tr>
+        
+        <tr>
+            <th>タスク</th>
+            <td>{{ $task->content }}</td>
+        </tr>
+    </table>
+
+{!! link_to_route('tasks.edit', 'このタスクを編集', ['id' => $task->id], ['class' => 'btn btn-light']) !!}
+
+{!! Form::model($task, ['route' => ['tasks.destroy', $task->id], 'method' => 'delete']) !!}
+        {!! Form::submit('削除', ['class' => 'btn btn-danger']) !!}
+    {!! Form::close() !!}
+     @else
+             <div class="center jumbotron">
+            <div class="text-center">
+                <h1>Welcome to the Tasklist</h1>
+                {!! link_to_route('signup.get', 'Sign up now!', [], ['class' => 'btn btn-lg btn-primary']) !!}
             </div>
-        </aside>
-        <div class="col-sm-8">
-            <ul class="nav nav-tabs nav-justified mb-3">
-                <li class="nav-item"><a href="{{ route('users.show', ['id' => $user->id]) }}" class="nav-link {{ Request::is('users/' . $user->id) ? 'active' : '' }}">TimeLine <span class="badge badge-secondary">{{ $count_tasks }}</span></a></li>
-                <li class="nav-item"><a href="#" class="nav-link">Followings</a></li>
-                <li class="nav-item"><a href="#" class="nav-link">Followers</a></li>
-            </ul>
-            @if (Auth::id() == $user->id)
-                {!! Form::open(['route' => 'tasks.store']) !!}
-                    <div class="form-group">
-                        {!! Form::textarea('content', old('content'), ['class' => 'form-control', 'rows' => '2']) !!}
-                        {!! Form::submit('Post', ['class' => 'btn btn-primary btn-block']) !!}
-                    </div>
-                {!! Form::close() !!}
-            @endif
-            @if (count($tasks) > 0)
-                @include('tasks.tasks', ['tasks' => $tasks])
-            @endif
         </div>
-    </div>
+  
+@endif
+
 @endsection

@@ -14,6 +14,13 @@
                         {!! Form::open(['route' => ['tasks.destroy', $task->id], 'method' => 'delete']) !!}
                             {!! Form::submit('Delete', ['class' => 'btn btn-danger btn-sm']) !!}
                         {!! Form::close() !!}
+                      @else
+                     <div class="center jumbotron">
+                        　<div class="text-center">
+                           　 <h1>Welcome to the Tasklist</h1>
+                            　{!! link_to_route('signup.get', 'Sign up now!', [], ['class' => 'btn btn-lg btn-primary']) !!}
+                    　　　</div>
+        　　　　　　　　　　</div>
                     @endif
                 </div>
             </div>
